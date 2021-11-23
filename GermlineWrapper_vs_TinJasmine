@@ -1,0 +1,159 @@
+##########################################################################
+## Comparison between GermlineWrapper and TinJasmine germline calls	##
+## Last modified: 11/23/2021						##
+## Contact:	Yizhe Song (y.song@wustl.edu);	##
+##		Matthew Wyczalkowski (m.wyczalkowski@wustl.edu)		## 
+##########################################################################
+
+For initial testing of the TinJasmine germline variant calling pipeline, we are comparing TinJasmine results with those from GermlineWrapper.
+The testing dataset is CPTAC3 LUSC/LSCC, for which we have GermlineWrapper calls ready.
+
+--> GermlineWrapper version:
+	- Germline variant calling was performed using Song's GermlineWrapper pipeline (https://github.com/ding-lab/germlinewrapper ; latest commit as of 02/04/2019: 8614037).
+	- Pipeline was slightly modified to work with reference genome GRCh38. Check the following file for changes: /gscmnt/gc2737/ding/fernanda/Germline_MMY/Tools/germlinewrapper_grch38/germlinewrapper.pl
+
+--> CPTAC3 LUSC GermlineWrapper results: /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/
+
+Soft links for the files being compared were created.
+Directories have the following structure:
+
+/gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/<sample>/
+/gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/<sample>/GermlineWrapper/
+/gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/<sample>/GermlineWrapper/RawResults/  # stores germline wrapper raw results
+/diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/ # stores germline wrapper results after all filters
+/gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/<sample>/TinJasmine/
+/diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/ # stores TinJasmine raw results
+/diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/ # stores TinJasmine results after all filters
+
+##== 1st round of comparisons: sample C3L-00081 ==##
+
+Here, I am first only comparing the results after the following filters:
+- Merging callers (unions of GATK and VarScan for SNVs,  2/3 callers for indels except Pindel only);
+- AD ≥ 5;
+- regions of interest (only keep coding and splicing variants, according to BED file);
+- no indels longer than 100bp.
+
+I used bcftools (version 1.14) isec to compare vcf files from the two pipelines.
+VCF files must be compressed with bgzip and indexed with tabix prior to using bcftools.
+VCF files were also normalized prior to comparison.
+After normalization, "weird" calls with "*" as variant allele from TinJasmine were filtered out prior to comparison, as they were messing with the results.
+Steps taken and summary of results are below.
+
+--> VCF normalization:
+
+$ cd /gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/C3L-00081/
+
+cd /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/
+
+bcftools norm -f /gscmnt/gc3020/dinglab/fernanda/Projects/CPTAC_HRD/SequenzaCalls/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.vcf.gz -oo GW_vs_TJ/logs/GW.vcf.normalize.log 
+
+
+bcftools norm -f /diskmnt/Projects/Users/ysong/test_data/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/call_roi_filter.normalized.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/HotspotFiltered.vcf  -oo GW_vs_TJ/logs/TJ.vcf.normalize.log 
+
+--> Removed weird "*" calls from TinJasmine:
+
+$ zcat TinJasmine/AD_ROI_indel_filtered/TinJasmine-postcall.cwl.allCall_VCF.normalized.vcf.gz | awk '$5 != "*"' | bgzip -c > TinJasmine/AD_ROI_indel_filtered/TinJasmine-postcall.cwl.allCall_VCF.normalized.filtered.vcf.gz
+
+
+bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz
+
+bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz
+
+
+--> Indexed resulting vcfs with tabix
+
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf.gz
+
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_gatk_indel/execution/output.normalized.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_gatk_snp/execution/output.normalized.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-filter_vcf/execution/output/filtered.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_varscan_snp/execution/VLD_FilterVCF_output.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_pindel/execution/output.normalized.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_varscan_indel/execution/output.normalized.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_varscan_snp/execution/output.normalized.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-gatk_germline_caller/execution/output/GATK.snp.Final.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-gatk_germline_caller/execution/output/GATK.indel.Final.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/HotspotFiltered.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.snp.Final.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.indel.Final.vcf.gz
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_vcf_remap_snp/execution/varscan-remapped.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vep_annotate/execution/results/vep/output_vep.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_gatk_indel/execution/VLD_FilterVCF_output.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_gatk_snp/execution/VLD_FilterVCF_output.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_pindel/execution/VLD_FilterVCF_output.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_varscan_indel/execution/VLD_FilterVCF_output.vcf
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf
+
+
+--> Compared resulting VCFs:
+
+bcftools isec -f .,PASS -nfiles /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz -Oz -oo GW_vs_TJ/logs/C3L-00081.GW.TJ.isec.log 
+
+
+Examples:
+   # Create intersection and complements of two sets saving the output in dir/*
+   bcftools isec A.vcf.gz B.vcf.gz -p dir
+
+   # Filter sites in A and B (but not in C) and create intersection
+   bcftools isec -e'MAF<0.01' -i'dbSNP=1' -e - A.vcf.gz B.vcf.gz C.vcf.gz -p dir
+
+   # Extract and write records from A shared by both A and B using exact allele match
+   bcftools isec A.vcf.gz B.vcf.gz -p dir -n =2 -w 1
+
+   # Extract and write records from C found in A and C but not in B
+   bcftools isec A.vcf.gz B.vcf.gz C.vcf.gz -p dir -n~101 -w 3
+
+   # Extract records private to A or B comparing by position only
+   bcftools isec A.vcf.gz B.vcf.gz -p dir -n -1 -c all
+
+bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz -p GW_vs_TJ/GW_vs_canonical_filter 
+
+--> Outputs:
+	/gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/C3L-00081/GW_vs_TJ/
+	/gscmnt/gc3020/dinglab/fernanda/Projects/GermlineWrapper_vs_TinJasmine/CPTAC/LUSC/C3L-00081/GW_vs_TJ/README.txt
+
+sites unique to GW
+/diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf
+
+change it to gz format
+bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz
+
+index it
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz
+
+Next step we would compare all other TJ steps with this file, to see whether we could rescure these variants.
+
+gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0000.vcf
+gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0001.vcf
+gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0003.vcf
+gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0004.vcf
+
+
+	- NUMBER OF VARIANTS AFTER FILTERS (counts are from normalized files):
+		GermlineWrapper:	24,773
+		TinJasmine:		24,626
+	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 485
+
+	- NUMBER OF VARIANTS UNIQUE TO TINJASMINE: 338
+
+	- NUMBER OF VARIANTS OVERLAPPING BETWEEN THE TWO PIPELINES: 24,288
+
+1. GW unique vs mergeVCF
+bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz -p GW_vs_TJ/GW_vs_merge_vcf 
+
+bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf.gz
+
+tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf.gz
+
+	- NUMBER OF VARIANTS AFTER FILTERS (counts are from normalized files):
+		GermlineWrapper:	24,773
+		TinJasmine:		24,626
+	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 485
+
+	- NUMBER OF VARIANTS UNIQUE TO TINJASMINE: 338
+
+	- NUMBER OF VARIANTS OVERLAPPING BETWEEN THE TWO PIPELINES: 24,288
+  
+2. GW unique vs mergeVCF
