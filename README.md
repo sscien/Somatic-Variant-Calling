@@ -1,5 +1,6 @@
 # Somatic-Variant-Calling
-# This repo will sumarize state of art variant calling methods
+
+This repo will sumarize state of art variant calling methods
 
 #  Somatic variant calling
 
