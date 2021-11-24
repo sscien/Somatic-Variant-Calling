@@ -210,6 +210,11 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_gatk_snp/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_pindel/execution/output.normalized.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_normalize_pindel
 
+0000.vcf.gz is the VCF contains VARIANTS UNIQUE TO GERMLINEWRAPPER(excluded rescued variants from mergeVCF, bcftools_normalize_gatk_indel and bcftools_normalize_gatk_snp stages)
+
+output.normalized.vcf.gz is the bcftools_normalize_pindel VCF 
+
+Error message:
 #[W::bcf_hdr_check_sanity] PL should be declared as Number=G
 
 
