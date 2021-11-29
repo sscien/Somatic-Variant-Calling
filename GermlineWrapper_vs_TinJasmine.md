@@ -76,7 +76,6 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
 tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.indel.Final.vcf.gz
 tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf.gz
 
-
 tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz
 tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/HotspotFiltered.vcf
 
@@ -126,7 +125,7 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
 
 Next step we would compare all other TJ steps with this file, to see whether we could rescure these variants.
 
-## count variants
+ count variants
 gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0000.vcf
 gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0001.vcf
 gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0003.vcf
@@ -137,20 +136,20 @@ gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0004.vcf
 
 - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 2114	
 
-1. GW unique from step0  vs mergeVCF
+### 1. GW unique from step0  vs mergeVCF
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz -p GW_vs_TJ/GW_vs_merge_vcf 
 
 bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf.gz
 
 tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf.gz
 
-# count variants
+ count variants
 /diskmnt/Projects/Users/ysong/program/gatk/gatk-4.2.3.0/gatk CountVariants \
       -V /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf.gz
       
 - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 2071	
   
-2. GW unique from step1  vs bcftools_normalize_gatk_indel
+### 2. GW unique from step1  vs bcftools_normalize_gatk_indel
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_merge_vcf/0000.vcf.gz  /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_gatk_indel/execution/output.normalized.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_normalize_gatk_indel
 
 "/diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_gatk_indel/0000.vcf"
@@ -164,7 +163,7 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
       
       - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 2040
 
-3. GW unique from step2  vs bcftools_normalize_gatk_snp
+### 3. GW unique from step2  vs bcftools_normalize_gatk_snp
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_gatk_indel/0000.vcf.gz  /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_gatk_snp/execution/output.normalized.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_normalize_gatk_snp
 
@@ -179,7 +178,7 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
       
       - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 397
       
-4. GW unique from step3  vs bcftools_normalize_pindel
+### 4. GW unique from step3  vs bcftools_normalize_pindel
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_gatk_snp/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_pindel/execution/output.normalized.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_normalize_pindel
 
@@ -202,7 +201,7 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
       
       - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 397
  
-5. GW unique from step4  vs bcftools_normalize_varscan_indel
+### 5. GW unique from step4  vs bcftools_normalize_varscan_indel
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_gatk_snp/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_varscan_indel/execution/output.normalized.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_normalize_varscan_indel
 
@@ -217,7 +216,7 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
       
       - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 390
 
-6. GW unique from step5  vs bcftools_normalize_varscan_snp
+### 6. GW unique from step5  vs bcftools_normalize_varscan_snp
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_varscan_indel/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-bcftools_normalize_varscan_snp/execution/output.normalized.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_normalize_varscan_snp
 
@@ -234,7 +233,7 @@ bcftools stats "/diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_T
       
 	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 276
 	
-7. GW unique from step6  vs bcftools_gatk_germline_caller
+### 7. GW unique from step6  vs bcftools_gatk_germline_caller
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_normalize_varscan_snp/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-gatk_germline_caller/execution/output/GATK.snp.Final.vcf.gz -p GW_vs_TJ/GW_vs_bcftools_gatk_germline_caller
 
@@ -251,7 +250,7 @@ bcftools stats /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_Ti
       
 	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 276	
 
-8. GW unique from step7  vs bcftools_gatk_germline_caller
+### 8. GW unique from step7  vs bcftools_gatk_germline_caller
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_bcftools_gatk_germline_caller/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-gatk_germline_caller/execution/output/GATK.indel.Final.vcf.gz -p GW_vs_TJ/GW_vs_GATK.indel.Final
 
@@ -268,7 +267,7 @@ bcftools stats /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_Ti
       
 	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 276
 
-9. GW unique from step8 vs bcftools_gatk_germline_caller
+### 9. GW unique from step8 vs bcftools_gatk_germline_caller
 
 bcftools norm -f /diskmnt/Projects/Users/ysong/test_data/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass_normalized.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf.gz
 
@@ -289,7 +288,7 @@ bcftools stats /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_Ti
       
 	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 276
 
-10. GW unique from step9  vs varscan_germline_caller
+### 10. GW unique from step9  vs varscan_germline_caller
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_GATK.indel.Final/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.snp.Final.vcf.gz -p GW_vs_TJ/GW_vs_varscan_germline_caller
 
@@ -306,7 +305,7 @@ bcftools stats /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_Ti
       
 	- NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 276
 
-11. GW unique  from step10 vs Varscan.indel.Final
+### 11. GW unique  from step10 vs Varscan.indel.Final
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_varscan_germline_caller/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.indel.Final.vcf.gz -p GW_vs_TJ/GW_vs_Varscan.indel.Final
 
