@@ -6,6 +6,9 @@
 ##		Matthew Wyczalkowski (m.wyczalkowski@wustl.edu)		## 
 ##########################################################################
 
+![image](https://user-images.githubusercontent.com/80489022/146967485-5b73787c-cc45-4a73-9a99-694a4bac8608.png)
+
+
 For initial testing of the TinJasmine germline variant calling pipeline, we are comparing TinJasmine results with those from GermlineWrapper.
 The testing dataset is CPTAC3 LUSC/LSCC sample C3L-00081.
 
