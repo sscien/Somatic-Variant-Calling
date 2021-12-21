@@ -39,7 +39,7 @@ Directories have the following structure:
 
 ##== 1st round of comparisons: sample C3L-00081 ==##
 
-Here, I am comparing the results from GermlineWrapper/AD_ROI_indel_filtered with Tindaisy after the following filters:
+Here, I am comparing the results from GermlineWrapper/AD_ROI_indel_filtered with TinJasmine after the following filters:
 
 * [`GATK_GermlineCaller`](https://github.com/ding-lab/GATK_GermlineCaller.git)
 * [`Varscan_GermlineCaller`](https://github.com/ding-lab/Varscan_GermlineCaller.git)
