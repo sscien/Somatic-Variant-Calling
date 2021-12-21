@@ -6,8 +6,17 @@
 ##		Matthew Wyczalkowski (m.wyczalkowski@wustl.edu)		## 
 ##########################################################################
 
+## quick overview of the results
+
 ![image](https://user-images.githubusercontent.com/80489022/146967485-5b73787c-cc45-4a73-9a99-694a4bac8608.png)
 
+1. compare GW/AD_ROI_indel_filtered to TJ Canonical filter yield 2,114 GW unique variants.
+2. compare 2,114 GW unique variants to TJ Merge VCF step, yield 2,071 GW unique variants.
+3. compare 2,071 GW unique variants to TJ GATK indel bcftool normalize step, yield 2,040 unique GW variants.
+4. compare 2,040 unique GW variants to TJ GATK SNP bcftool normalize step, yield 397 unique GW variant. So a larger number of GW unique variants were filtered out at this step. We rescued 1,634 variants here!
+5. compare 397 GW unique variants to TJ varscan indel bcftool normalize step, yield 390 unique GW variants.
+6. compare 390 GW unique variants to TJ varscan SNP bcftool normalize step, yield 276 unique GW variants.
+7. compare 276 unique GW variants to TJ varscan caller, GATK caller and Pindel caller, remain 276 unique GW variants. No variants were rescued in these steps.
 
 For initial testing of the TinJasmine germline variant calling pipeline, we are comparing TinJasmine results with those from GermlineWrapper.
 The testing dataset is CPTAC3 LUSC/LSCC sample C3L-00081.
