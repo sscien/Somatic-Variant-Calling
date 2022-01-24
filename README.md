@@ -28,3 +28,7 @@ https://anaconda.org/bioconda/hisat2
 
 ## Which Aligner Software is the Best for Our Study?
 https://www.clinmedjournals.org/articles/jggr/journal-of-genetics-and-genome-research-jggr-7-048.pdf
+
+## investigating the direct impact of variants on protein structure
+[Hotspot3D](https://github.com/ding-lab/hotspot3d)
+https://www.nature.com/articles/ng.3586
