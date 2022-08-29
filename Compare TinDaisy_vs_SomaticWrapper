@@ -28,21 +28,9 @@ cp /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/Alchemist/maf_data/data/AL
 
 ####
 
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/0bbcaaed-00cd-4bb3-8f5d-9c2587f97ef8/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
+scp -r /storage1/fs1/dinglab/Active/Projects/ysong/pipelines/vcf_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/ ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/
 
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/439383b7-3abb-4a26-b24e-a9b2c734f32d/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
-
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/dd656d1a-60d5-4923-b438-9482f80abe77/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
-
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/cb9824e2-ec19-4bc2-b7d0-f87f1584ab14/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
-
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/1443ca5f-6abe-4583-93be-cbb3d5e78a9e/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
-
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/a147f970-5cab-4c0b-a948-65f2824f6425/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
-
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/3ac959fa-c6d6-447a-b13b-6f294b23eb2c/call-canonical_filter/execution/output/HotspotFiltered.vcf
-
-scp -r /storage1/fs1/dinglab/Active/Projects/chen.xiangyu/cromwell-data/cromwell-workdir/cromwell-executions/tindaisy2.6.1.cwl/adfd4b80-b983-4a9c-b145-6a2f8a820b5d/call-canonical_filter/execution/output/HotspotFiltered.vcf ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
+scp -r /storage1/fs1/dinglab/Active/Projects/ysong/pipelines/vcf_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/ ysong@katmai.wusm.wustl.edu:/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/
 
 ## quick overview of the results
 
@@ -107,38 +95,27 @@ bcftools norm -f /diskmnt/Projects/Users/ysong/test_data/GRCh38.d1.vd1.fa --mult
 
 --> convert vcf file to vcf.gz
 
-bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
+for f in *.vcf; do
+   bgzip "$f"
+done
 
-bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz
-
-bgzip /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf.gz
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
+for f in *.vcf; do
+   bgzip "$f"
+done
 
 --> Indexed resulting vcfs with tabix
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
+for f in *.vcf.gz; do
+   tabix -p vcf  "$f"
+done
 
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf.gz
 
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-filter_vcf/execution/output/filtered.vcf
-
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-gatk_germline_caller/execution/output/GATK.snp.Final.vcf.gz
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-gatk_germline_caller/execution/output/GATK.indel.Final.vcf.gz
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.snp.Final.vcf.gz
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_germline_caller/execution/output/Varscan.indel.Final.vcf.gz
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf.gz
-
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/HotspotFiltered.vcf
-
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-varscan_vcf_remap_snp/execution/varscan-remapped.vcf
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vep_annotate/execution/results/vep/output_vep.vcf
-
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-pindel_filter/execution/filtered/pindel_sifted.out.CvgVafStrand_pass.vcf
-
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_gatk_indel/execution/VLD_FilterVCF_output.vcf
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_gatk_snp/execution/VLD_FilterVCF_output.vcf
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_pindel/execution/VLD_FilterVCF_output.vcf
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_varscan_indel/execution/VLD_FilterVCF_output.vcf
-tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-vld_filter_varscan_snp/execution/VLD_FilterVCF_output.vcf
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
+for f in *.vcf.gz; do
+   tabix -p vcf  "$f"
+done
 
 --> Compared resulting VCFs:
 
@@ -175,11 +152,18 @@ tabix -p vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJ
 
 Next step we would compare all other TJ steps with this file, to see whether we could rescure these variants.
 
+0000.vcf  0001.vcf  0002.vcf  0003.vcf  README.txt  sites.txt
+
+SW_vs_TD//0000.vcf	for records private to	/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/ALCH-AF1Y_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz
+SW_vs_TD//0001.vcf	for records private to	/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/ALCH-AF1Y_FFPE_Tindaisy_HotspotFiltered.vcf.gz
+SW_vs_TD//0002.vcf	for records from /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/ALCH-AF1Y_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz shared by both	/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/ALCH-AF1Y_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/ALCH-AF1Y_FFPE_Tindaisy_HotspotFiltered.vcf.gz
+SW_vs_TD//0003.vcf	for records from /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/ALCH-AF1Y_FFPE_Tindaisy_HotspotFiltered.vcf.gz shared by both	/diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/ALCH-AF1Y_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/ALCH-AF1Y_FFPE_Tindaisy_HotspotFiltered.vcf.gz
+
  count variants
-gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0000.vcf
-gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0001.vcf
-gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0003.vcf
-gatk CountVariants -V /GW_vs_TJ/GW_vs_canonical_filter/0004.vcf
+gatk CountVariants -V /SW_vs_TD/0000.vcf
+gatk CountVariants -V /SW_vs_TD/0001.vcf
+gatk CountVariants -V /SW_vs_TD/0003.vcf
+gatk CountVariants -V /SW_vs_TD/0004.vcf
 
 /diskmnt/Projects/Users/ysong/program/gatk/gatk-4.2.3.0/gatk CountVariants \
       -V /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz
