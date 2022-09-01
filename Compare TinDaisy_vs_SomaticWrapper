@@ -105,41 +105,95 @@ VCF files were also normalized prior to comparison.
 
 Steps taken and summary of results are below.
 
+--> convert vcf.gz file to vcf
+
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
+for f in *.vcf.gz; do
+   gzip -d "$f"
+done
+
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
+for f in *.vcf.gz; do
+   gzip -d "$f"
+done
+
 --> VCF normalization:
-
-cd /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/
-
-bcftools norm -f /gscmnt/gc3020/dinglab/fernanda/Projects/CPTAC_HRD/SequenzaCalls/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.vcf.gz -oo GW_vs_TJ/logs/GW.vcf.normalize.log 
-
-bcftools norm -f /diskmnt/Projects/Users/ysong/test_data/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/call_roi_filter.normalized.vcf /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-roi_filter/execution/output/HotspotFiltered.vcf  -oo GW_vs_TJ/logs/TJ.vcf.normalize.log 
-
---> convert vcf file to vcf.gz
+conda activate sambcf
 
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
 for f in *.vcf; do
-   bgzip "$f"
+   bcftools norm -f /diskmnt/Projects/Users/ysong/test_data/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o "normalized.$f" "$f"
 done
 
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
 for f in *.vcf; do
+   bcftools norm -f /diskmnt/Projects/Users/ysong/test_data/GRCh38.d1.vd1.fa --multiallelics - --check-ref e -Oz -o "normalized.$f" "$f"
+done
+
+--> convert vcf file to vcf.gz
+
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
+for f in normalized.*.vcf; do
+   bgzip "$f"
+done
+
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
+for f in normalized.*.vcf; do
    bgzip "$f"
 done
 
 --> Indexed resulting vcfs with tabix
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
-for f in *.vcf.gz; do
+for f in normalized.*.vcf.gz; do
    tabix -p vcf  "$f"
 done
 
 
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
-for f in *.vcf.gz; do
+for f in normalized.*.vcf.gz; do
    tabix -p vcf  "$f"
 done
 
 --> Compared resulting VCFs:
 
-0. GW  vs TJ_canonical_filter
+find /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/ -name "normalized.*.vcf.gz" > /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/vcf.list
+
+cat BCF.list
+
+paste BCF.list | while read BCF ;
+do
+        echo "Processing ""${BCF}""..."
+
+        #Create results filename
+        resultsfile=$(echo "${BCF}" | sed 's/.bcf$//g') ;
+        echo -e "Results file will be ""${resultsfile}\n" ;
+
+        #Add security to ensure that your input files are not overwritten
+        if [ "${BCF}" == "${resultsfile}" ]
+        then
+             echo "Error! - input filename is the same as output file/directory!"
+             exit 1 ;
+        fi
+
+        bcftools isec Baseline.bcf "${BCF}" -p "${resultsfile}" ;
+done ;
+######
+
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-AD8B_FF_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-AD8B_FF_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-AD8B_FF
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-AD8B_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-AD8B_FFPE_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-AD8B_FFPE
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-ADU4_FF_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-ADU4_FF_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-ADU4_FF
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-ADU4_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-ADU4_FFPE_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-ADU4_FFPE
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-ADX0_FF_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-ADX0_FF_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-ADX0_FF
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-ADX0_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-ADX0_FFPE_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-ADX0_FFPE
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-AF1Y_FF_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-AF1Y_FF_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-AF1Y_FF
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-AF1Y_FFPE_SomaticWrapper_HotspotFiltered.vcf.gz /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-AF1Y_FFPE_Tindaisy_HotspotFiltered.vcf.gz -p ALCH-AF1Y_FFPE
+
+#####
+
+bash /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/step1.sh
+
+
 
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GermlineWrapper/AD_ROI_indel_filtered/C3L-00081.filtered.ROI.AD.5.noLongIndels.normalized.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-canonical_filter/execution/output/HotspotFiltered.vcf.gz -p GW_vs_TJ/GW_vs_canonical_filter -oo GW_vs_TJ/logs/C3L-00081.GW.TJ.isec.log 
 
@@ -189,6 +243,30 @@ gatk CountVariants -V /SW_vs_TD/0004.vcf
       -V /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz
 
 - NUMBER OF VARIANTS UNIQUE TO GERMLINEWRAPPER: 2114	
+
+--> convert vcf file to vcf.gz
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf; do
+   bgzip "$f"
+done
+
+--> Indexed resulting vcfs with tabix
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf.gz; do
+   tabix -p vcf  "$f"
+done
+
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf.gz; do
+   bcftools stats "$f" >"$f.file.stats"
+done
+
+#####
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf.gz; do
+   /diskmnt/Projects/Users/ysong/program/gatk/gatk-4.2.3.0/gatk CountVariants -V "$f" >> "$f_count_variants.txt"
+done
+
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf.gz.file.stats; do
+  cat "$f" >> /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/stats.txt
+done
 
 ### 1. GW unique from step0  vs mergeVCF
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz -p GW_vs_TJ/GW_vs_merge_vcf 
