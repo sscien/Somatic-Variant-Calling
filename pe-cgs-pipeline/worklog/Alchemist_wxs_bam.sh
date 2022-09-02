@@ -1,11 +1,12 @@
 tmux
-cd pecgs-pipeline/src/compute1
 export LSF_DOCKER_VOLUMES="/storage1/fs1/dinglab/Active:/storage1/fs1/dinglab/Active /scratch1/fs1/dinglab:/scratch1/fs1/dinglab"
 export PATH="/miniconda/envs/pecgs/bin:$PATH"
 bsub -q dinglab-interactive -G compute-dinglab -Is -a 'docker(estorrs/pecgs-pipeline:0.0.1)' '/bin/bash'
 ### generate run
 # mmrf_TN_wxs_bam
-python /scratch1/fs1/dinglab/Active/Projects/ysong/pecgs-pipeline/src/compute1/generate_run_commands.py make-run pecgs_TN_wxs_bam /storage1/fs1/dinglab/Active/Projects/ysong/Projects/pecgs-cwl/pecgs-pipeline/run_instance/MMRF_WXS_bam/run_list.txt /scratch1/fs1/dinglab/Active/Projects/ysong/MMRF/mmrf_TN_wxs_bam
+python /storage1/fs1/dinglab/Active/Projects/ysong/Projects/pecgs-cwl/pecgs-pipeline/src/compute1/generate_run_commands.py make-run pecgs_TN_wxs_bam /storage1/fs1/dinglab/Active/Projects/ysong/Projects/pecgs-cwl/run_list/Alchemist/run_list.txt /scratch1/fs1/dinglab/Active/Projects/ysong/Alchemist/alchemist_TN_wxs_bam_b2/
+
+cd /scratch1/fs1/dinglab/Active/Projects/ysong/Alchemist/alchemist_TN_wxs_bam_b2/
 
 #mmrf_rna_fq
 python /scratch1/fs1/dinglab/Active/Projects/ysong/pecgs-pipeline/src/compute1/generate_run_commands.py make-run pecgs_T_rna_fq /scratch1/fs1/dinglab/Active/Projects/ysong/MMRF/mmrf_rna_fq/MMRF_RNA_seq_priority_sample_catalog.txt /scratch1/fs1/dinglab/Active/Projects/ysong/MMRF/mmrf_rna_fq
