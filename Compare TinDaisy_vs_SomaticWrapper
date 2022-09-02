@@ -134,12 +134,12 @@ done
 
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf
 for f in normalized.*.vcf; do
-   bgzip "$f"
+   bgzip -c "$f" >"$f.gz"
 done
 
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf
 for f in normalized.*.vcf; do
-   bgzip "$f"
+   bgzip -c "$f" >"$f.gz"
 done
 
 --> Indexed resulting vcfs with tabix
@@ -177,6 +177,11 @@ do
 
         bcftools isec Baseline.bcf "${BCF}" -p "${resultsfile}" ;
 done ;
+
+
+cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf
+bcftools isec /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Somatic_Wrapper_vcf/normalized.ALCH-AD8B_FF_SomaticWrapper_HotspotFiltered.vcf /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/TinDaisy_vcf/normalized.ALCH-AD8B_FF_Tindaisy_HotspotFiltered.vcf -p ALCH-AD8B_FF
+
 ######
 
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf
@@ -258,6 +263,11 @@ for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline
    bcftools stats "$f" >"$f.file.stats"
 done
 
+
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf; do
+   bcftools stats "$f" >"$f.file.stats"
+done
+
 #####
 cd /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/
 for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf.gz; do
@@ -268,6 +278,10 @@ for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline
   cat "$f" >> /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/stats.txt
 done
 
+
+for f in /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/*/*.vcf.file.stats; do
+  cat "$f" >> /diskmnt/Projects/Users/ysong/project/variant_calling_pipeline/pipeline_comparison/TinDaisy_vs_SomaticWrapper/Comparison_vcf/stats.txt
+done
 ### 1. GW unique from step0  vs mergeVCF
 bcftools isec /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/SW/CPTAC/LUSC/C3L-00081/GW_vs_TJ/GW_vs_canonical_filter/0000.vcf.gz /diskmnt/Projects/Users/ysong/project/PECGS/GermlineWrapper_vs_TinJasmine/TJ/LUSC/call-merge_vcf/execution/output/merged.vcf.gz -p GW_vs_TJ/GW_vs_merge_vcf 
 
