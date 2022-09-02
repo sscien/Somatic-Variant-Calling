@@ -1,3 +1,12 @@
+cd /storage1/fs1/dinglab/Active/Projects/ysong/Projects/pecgs-cwl
+git pull && git submodule update --remote https://github.com/ding-lab/pecgs-pipeline.git
+git pull --recurse-submodules https://github.com/ding-lab/pecgs-pipeline.git
+
+git clone --recurse-submodules  https://github.com/ding-lab/pecgs-pipeline.git
+
+git submodule update --remote
+
+
 tmux
 export LSF_DOCKER_VOLUMES="/storage1/fs1/dinglab/Active:/storage1/fs1/dinglab/Active /scratch1/fs1/dinglab:/scratch1/fs1/dinglab"
 export PATH="/miniconda/envs/pecgs/bin:$PATH"
@@ -7,6 +16,8 @@ bsub -q dinglab-interactive -G compute-dinglab -Is -a 'docker(estorrs/pecgs-pipe
 python /storage1/fs1/dinglab/Active/Projects/ysong/Projects/pecgs-cwl/pecgs-pipeline/src/compute1/generate_run_commands.py make-run pecgs_TN_wxs_bam /storage1/fs1/dinglab/Active/Projects/ysong/Projects/pecgs-cwl/run_list/Alchemist/run_list.txt /scratch1/fs1/dinglab/Active/Projects/ysong/Alchemist/alchemist_TN_wxs_bam_b2/
 
 cd /scratch1/fs1/dinglab/Active/Projects/ysong/Alchemist/alchemist_TN_wxs_bam_b2/
+bash 1.run_jobs.sh
+
 
 #mmrf_rna_fq
 python /scratch1/fs1/dinglab/Active/Projects/ysong/pecgs-pipeline/src/compute1/generate_run_commands.py make-run pecgs_T_rna_fq /scratch1/fs1/dinglab/Active/Projects/ysong/MMRF/mmrf_rna_fq/MMRF_RNA_seq_priority_sample_catalog.txt /scratch1/fs1/dinglab/Active/Projects/ysong/MMRF/mmrf_rna_fq
